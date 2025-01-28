@@ -2,7 +2,8 @@
 
 - name: Setup Homelab Raspberry Pi Node
   hosts: local
-
+  vars_files:
+    vars.yaml
   vars:
     current_user: "{{ lookup('env', 'USER') }}"
   roles:
