@@ -1,1 +1,1 @@
-ansible_user: pi
+my_var: test
