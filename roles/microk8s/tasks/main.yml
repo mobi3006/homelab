@@ -16,4 +16,9 @@
       shell: |
         microk8s enable dns storage
 
+    - name: configure .alias
+      copy:
+        src: files/alias.zsh
+        dest: /home/{{ current_user }}/{{ oh_my_zsh_custom_folder }}/aliases-microk8s.zsh
+
   become: true

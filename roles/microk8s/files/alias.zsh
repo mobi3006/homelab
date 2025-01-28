@@ -1,0 +1,1 @@
+alias k="microk8s kubectl"
