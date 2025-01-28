@@ -1,6 +1,6 @@
 ---
 
-- name: Setup Homelab Raspberry Pi Node
+- name: Setup Homelab Raspberry Pi OS Node
   hosts: local
   vars_files:
     vars.yaml
