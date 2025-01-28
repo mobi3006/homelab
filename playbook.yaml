@@ -2,11 +2,11 @@
 
 - name: Setup Homelab Raspberry Pi Node
   hosts: local
+
   vars:
     current_user: "{{ lookup('env', 'USER') }}"
   roles:
-    - os
-    - zsh
+    - basics
     - microk8s
     - docker
     - k9s

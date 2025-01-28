@@ -1,0 +1,58 @@
+---
+- block:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+      become: true
+
+    #############################################
+    # snap
+    #
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: present
+      become: true
+
+    - name: Install package with snap
+      shell: snap install core
+      become: true
+
+    #############################################
+    # zsh
+    #
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+      become: true
+
+    - name: Change default shell to zsh
+      user:
+        name: "{{ current_user }}"
+        shell: /usr/bin/zsh
+      become: true
+
+    - name: Install oh-my-zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+      args:
+        creates: /home/{{ current_user }}/.oh-my-zsh
+
+    - name: extend alias 
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: 'alias ll="ls -l"'
+        state: present
+
+    #############################################
+    # ... finishing
+    #
+    - name: add snap binaries to PATH
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: 'export PATH=$PATH:/snap/bin'
+        state: present

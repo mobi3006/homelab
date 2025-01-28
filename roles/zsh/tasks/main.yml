@@ -24,5 +24,3 @@
         create: yes
         line: 'alias ll="ls -l"'
         state: present
-
-  become: true
