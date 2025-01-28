@@ -6,7 +6,7 @@
     current_user: "{{ lookup('env', 'USER') }}"
   roles:
     - os
-    - shell
+    - zsh
     - microk8s
     - docker
     - k9s
