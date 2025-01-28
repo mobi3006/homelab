@@ -4,11 +4,13 @@
       apt:
         name: zsh
         state: present
+      become: true
 
     - name: Change default shell to zsh
       user:
         name: "{{ current_user }}"
         shell: /usr/bin/zsh
+      become: true
 
     - name: Install oh-my-zsh
       shell: |
@@ -20,5 +22,9 @@
       copy:
         src: files/.alias
         dest: /home/{{ current_user }}/.oh-my-zsh/custom/aliases.zsh
+
+    - name: add snap binaries into PATH
+      shell: |
+        echo "export PATH=$PATH:/snap/bin" >> /home/{{ current_user }}/.zshrc
 
   become: true
