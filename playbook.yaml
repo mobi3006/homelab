@@ -4,5 +4,5 @@
   tasks:
     - name: Ensure a file exists
       file:
-        path: /tmp/ansible_test_file
+        path: /tmp/ansible_test_file_new
         state: touch
