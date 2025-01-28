@@ -1,6 +1,8 @@
 ---
 - name: Setup Raspberry Pi
   hosts: local
+  vars:
+    ansible_user: "{{ lookup('env', 'USER') }}"
   become: yes
   tasks:
     - name: Update and upgrade apt packages
@@ -27,7 +29,7 @@
       shell: |
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
       args:
-        creates: /home/{{ ansible_user }}/.oh-my-zsh
+        creates: /home/{{ lookup('env', 'USER') }}/.oh-my-zsh
 
     - name: Install microk8s
       snap:
