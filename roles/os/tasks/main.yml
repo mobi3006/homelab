@@ -1,9 +1,5 @@
 ---
 - block:
-    - name: Adjust /etc/apt/sources.list to support x86-64 binaries (also amd64 Docker Images) in MacOS Rosetta mode
-      shell: |
-        ~/box/ansible-ubuntu/roles/basics/files/rosetta_x86_sources.sh enable
-        apt update
     - name: Update and upgrade apt packages
       apt:
         update_cache: yes

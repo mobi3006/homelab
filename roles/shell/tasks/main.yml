@@ -1,0 +1,24 @@
+---
+- block:
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+
+    - name: Change default shell to zsh
+      user:
+        name: "{{ current_user }}"
+        shell: /usr/bin/zsh
+
+    - name: Install oh-my-zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+      args:
+        creates: /home/{{ current_user }}/.oh-my-zsh
+
+    - name: configure .alias
+      copy:
+        src: files/.alias
+        dest: /home/{{ current_user }}/.oh-my-zsh/custom/aliases.zsh
+
+  become: true

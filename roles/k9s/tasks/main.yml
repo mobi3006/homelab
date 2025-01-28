@@ -1,0 +1,11 @@
+---
+- block:
+    - name: Install k9s
+      shell: |
+        wget https://github.com/derailed/k9s/releases/download/v0.25.18/k9s_Linux_arm64.tar.gz
+        tar -xzf k9s_Linux_arm64.tar.gz
+        mv k9s /usr/local/bin/
+      args:
+        creates: /usr/local/bin/k9s
+
+  become: true

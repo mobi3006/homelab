@@ -1,0 +1,19 @@
+---
+- block:
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        state: present
+        classic: yes
+
+    - name: Add user to microk8s group
+      user:
+        name: "{{ current_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Enable microk8s addons
+      shell: |
+        microk8s enable dns storage
+
+  become: true

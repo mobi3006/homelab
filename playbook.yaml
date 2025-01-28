@@ -5,4 +5,8 @@
   vars:
     current_user: "{{ lookup('env', 'USER') }}"
   roles:
-    - basics
+    - os
+    - shell
+    - microk8s
+    - docker
+    - k9s
