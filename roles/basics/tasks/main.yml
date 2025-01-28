@@ -1,0 +1,71 @@
+---
+- block:
+    - name: Adjust /etc/apt/sources.list to support x86-64 binaries (also amd64 Docker Images) in MacOS Rosetta mode
+      shell: |
+        ~/box/ansible-ubuntu/roles/basics/files/rosetta_x86_sources.sh enable
+        apt update
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install snapd
+      apt:
+        name: snapd
+        state: present
+
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+
+    - name: Change default shell to zsh
+      user:
+        name: "{{ current_user }}"
+        shell: /usr/bin/zsh
+
+    - name: Install oh-my-zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+      args:
+        creates: /home/{{ lookup('env', 'USER') }}/.oh-my-zsh
+
+    - name: Install microk8s
+      snap:
+        name: microk8s
+        state: present
+        classic: yes
+
+    - name: Add user to microk8s group
+      user:
+        name: "{{ current_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Enable microk8s addons
+      shell: |
+        microk8s enable dns storage
+      become: yes
+
+    - name: Install Docker
+      shell: |
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
+      args:
+        creates: /usr/bin/docker
+
+    - name: Add user to docker group
+      user:
+        name: "{{ current_user }}"
+        groups: docker
+        append: yes
+
+    - name: Install k9s
+      shell: |
+        wget https://github.com/derailed/k9s/releases/download/v0.25.18/k9s_Linux_arm64.tar.gz
+        tar -xzf k9s_Linux_arm64.tar.gz
+        mv k9s /usr/local/bin/
+      args:
+        creates: /usr/local/bin/k9s
+
+  become: true
