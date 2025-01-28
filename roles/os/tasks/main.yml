@@ -12,6 +12,10 @@
         state: present
       become: true
 
+    - name: Install package with snap
+      shell: snap install core
+      become: true
+
     - name: extend PATH
       lineinfile:
         path: /home/{{ current_user }}/.zshrc
