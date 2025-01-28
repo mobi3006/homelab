@@ -14,12 +14,17 @@
         append: yes
       become: true
 
+    - name: create ~/.kube/config for microk8s
+      shell: |
+        /snap/bin/microk8s status --wait-ready
+        /snap/bin/microk8s kubectl config view --raw > ~/.kube/config
+
     - name: Enable microk8s addons
       shell: |
         /snap/bin/microk8s enable dns storage
       become: true
 
-    - name: extend alias 
+    - name: extend alias
       lineinfile:
         path: /home/{{ current_user }}/.zshrc
         create: yes
