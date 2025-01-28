@@ -34,11 +34,17 @@
         shell: /usr/bin/zsh
       become: true
 
+    - name: Check if oh-my-zsh already installed
+      stat:
+        path: /home/{{ current_user }}/.oh-my-zsh
+      register: oh-my-zsh
+
     - name: Install oh-my-zsh
       shell: |
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
       args:
         creates: /home/{{ current_user }}/.oh-my-zsh
+      when: not oh-my-zsh.stat.exists
 
     - name: extend alias 
       lineinfile:
