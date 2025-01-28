@@ -1,5 +1,5 @@
 ---
-- name: Setup Raspberry Pi
+- name: Setup Homelab Raspberry Pi Node
   hosts: local
   vars:
     ansible_user: "{{ lookup('env', 'USER') }}"
