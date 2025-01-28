@@ -4,10 +4,17 @@
       apt:
         update_cache: yes
         upgrade: dist
+      become: true
 
     - name: Install snapd
       apt:
         name: snapd
         state: present
+      become: true
 
-  become: true
+    - name: extend PATH
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: 'export PATH=$PATH:/snap/bin'
+        state: present

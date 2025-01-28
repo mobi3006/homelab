@@ -18,9 +18,11 @@
       args:
         creates: /home/{{ current_user }}/.oh-my-zsh
 
-    - name: configure .alias
-      copy:
-        src: files/alias.zsh
-        dest: /home/{{ current_user }}/{{ oh_my_zsh_custom_folder }}/aliases-shell.zsh
+    - name: extend alias 
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: 'alias ll="ls -l"'
+        state: present
 
   become: true
