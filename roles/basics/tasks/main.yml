@@ -1,9 +1,24 @@
 ---
 - block:
+    # TODO: is this really doing a "apt full-upgrade"?
     - name: Update and upgrade apt packages
       apt:
         update_cache: yes
         upgrade: dist
+      become: true
+
+    - name: Ensure .ssh directory exists
+      file:
+        path: /home/{{ current_user }}/.ssh
+        state: directory
+        mode: '0700'
+        owner: {{ current_user }}
+        group: {{ current_user }}
+
+    - name: Install dstat
+      apt:
+        name: dstat
+        state: present
       become: true
 
     #############################################

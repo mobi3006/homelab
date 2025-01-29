@@ -28,5 +28,8 @@
       lineinfile:
         path: /home/{{ current_user }}/.zshrc
         create: yes
-        line: 'alias k="microk8s kubectl"'
+        line: "{{ item }}"
         state: present
+      with_items:
+        - 'alias k="microk8s kubectl"'
+        - 'alias kubectl="microk8s kubectl"'
