@@ -12,8 +12,8 @@
         path: /home/{{ current_user }}/.ssh
         state: directory
         mode: '0700'
-        owner: {{ current_user }}
-        group: {{ current_user }}
+        owner: "{{ current_user }}"
+        group: "{{ current_user }}"
 
     #############################################
     # monitoring tooling
@@ -61,12 +61,18 @@
       args:
         creates: /home/{{ current_user }}/.oh-my-zsh
 
-    - name: extend alias 
+    - name: extend .zshrc
       lineinfile:
         path: /home/{{ current_user }}/.zshrc
         create: yes
-        line: 'alias ll="ls -l"'
+        line: ''
         state: present
+      with_items: 
+        - 'alias cdhomelabansible="cd ~/src/homelab-ansible"'
+        - 'alias la="ls -la"'
+        - 'alias ll="ls -l"'
+        - 'alias lt="ls -ltr"'
+        - 'export EDITOR=vi'
 
     #############################################
     # ... finishing
