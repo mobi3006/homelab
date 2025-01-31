@@ -8,6 +8,8 @@
     current_user: "{{ lookup('env', 'USER') }}"
   roles:
     - basics
-    - microk8s
+    - git
+    #- microk8s
+    - k3s
     - docker
     - k9s

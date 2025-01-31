@@ -1,23 +1,16 @@
 ---
 - block:
-    - name: Check if docker already installed
-      stat:
-        path: /usr/bin/docker
-      register: docker
-
     - name: Install Docker
       shell: |
         curl -fsSL https://get.docker.com -o get-docker.sh
         sh get-docker.sh
       args:
         creates: /usr/bin/docker
-      when: not docker.stat.exists
 
     - name: Add user to docker group
       user:
         name: "{{ current_user }}"
         groups: docker
         append: yes
-      when: not docker.stat.exists
 
   become: true

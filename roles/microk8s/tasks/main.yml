@@ -4,6 +4,9 @@
       snap:
         name: microk8s
         state: present
+        # Using the --classic flag ensures that MicroK8s has the necessary permissions
+        # to function properly, especially when interacting with other system components
+        # and resources.
         classic: yes
       become: true
 
@@ -14,15 +17,23 @@
         append: yes
       become: true
 
+    - name: ensure microk8s is running
+      shell: |
+        /snap/bin/microk8s start
+        /snap/bin/microk8s status --wait-ready
+      become: true
+
     - name: create ~/.kube/config for microk8s
       shell: |
-        /snap/bin/microk8s status --wait-ready
         /snap/bin/microk8s kubectl config view --raw > ~/.kube/config
 
     - name: Enable microk8s addons
       shell: |
-        /snap/bin/microk8s enable dns storage
+        /snap/bin/microk8s enable {{ item }}
       become: true
+      with_items:
+        - 'dns'
+        - 'storage'
 
     - name: extend alias
       lineinfile:

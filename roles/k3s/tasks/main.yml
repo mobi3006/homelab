@@ -1,0 +1,26 @@
+---
+- block:
+    - name: Install k3s
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sh -s -
+      args:
+        creates: /usr/local/bin/k3s
+      become: true
+
+    - name: create ~/.kube/config for k3s
+      shell: |
+        cp /etc/rancher/k3s/k3s.yaml /home/{{ current_user }}/.kube/config
+        chown $(whoami):$(whoami) /home/{{ current_user }}/.kube/config
+      args:
+        creates: /home/{{ current_user }}/.kube/config
+      become: true
+
+    - name: extend alias
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - 'alias k="k3s kubectl"'
+        - 'alias kubectl="k3s kubectl"'

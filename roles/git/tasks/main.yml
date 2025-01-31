@@ -15,17 +15,11 @@
         owner: {{ current_user }}
         group: {{ current_user }}
 
-    #############################################
-    # monitoring tooling
-    #
-    - name: Install perfomance monitoring tools
+    - name: Install dstat
       apt:
-        name: "{{ item }}"
+        name: dstat
         state: present
       become: true
-      with_items:
-        - 'dstat'
-        - 'procps'  # for vmstat
 
     #############################################
     # snap
@@ -55,11 +49,17 @@
         shell: /usr/bin/zsh
       become: true
 
+    - name: Check if oh-my-zsh already installed
+      stat:
+        path: /home/{{ current_user }}/.oh-my-zsh
+      register: oh_my_zsh
+
     - name: Install oh-my-zsh
       shell: |
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
       args:
         creates: /home/{{ current_user }}/.oh-my-zsh
+      when: not oh_my_zsh.stat.exists
 
     - name: extend alias 
       lineinfile:

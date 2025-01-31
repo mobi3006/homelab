@@ -1,11 +1,6 @@
 ---
 - block:
 
-    - name: Check if k9s already installed
-      stat:
-        path: /usr/local/bin/k9s
-      register: k9s
-
     - name: Install k9s
       shell: |
         wget -O /tmp/k9s.tar.gz https://github.com/derailed/k9s/releases/download/v0.25.18/k9s_Linux_{{ architecture }}.tar.gz
@@ -13,6 +8,5 @@
         mv k9s /usr/local/bin/
       args:
         creates: /usr/local/bin/k9s
-      when: not k9s.stat.exists
 
   become: true
