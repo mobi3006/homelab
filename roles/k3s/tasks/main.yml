@@ -10,12 +10,12 @@
     - name: create ~/.kube/config for k3s
       shell: |
         cp /etc/rancher/k3s/k3s.yaml /home/{{ current_user }}/.kube/config
-        chown $(whoami):$(whoami) /home/{{ current_user }}/.kube/config
+        chown {{ current_user }}:{{ current_user }} /home/{{ current_user }}/.kube/config
       args:
         creates: /home/{{ current_user }}/.kube/config
       become: true
 
-    - name: extend alias
+    - name: extend .zshrc
       lineinfile:
         path: /home/{{ current_user }}/.zshrc
         create: yes
@@ -24,3 +24,4 @@
       with_items:
         - 'alias k="k3s kubectl"'
         - 'alias kubectl="k3s kubectl"'
+        - 'export KUBECONFIG=/home/pi/.kube/config'
