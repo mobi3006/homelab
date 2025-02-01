@@ -1,0 +1,21 @@
+---
+- block:
+    - name: Configure url for kubens download (aarch64)
+      set_fact:
+        kubens_url: "https://github.com/ahmetb/kubectx/releases/download/{{ kubens_version }}/kubens_{{ kubens_version }}_linux_arm64.tar.gz"
+      when: ansible_architecture == "aarch64"
+
+    - name: Configure url for kubens download (x86_64)
+      set_fact:
+        kubens_url: "https://github.com/ahmetb/kubectx/releases/download/{{ kubens_version }}/kubens_{{ kubens_version }}_linux_x86_64.tar.gz"
+      when: ansible_architecture == "x86_64"
+
+    - name: Install kubens
+      shell: |
+        curl -o /tmp/kubens.tar.gz -s -L {{ kubens_url }}
+        cd /tmp
+        tar xvfz /tmp/kubens.tar.gz
+        mv kubens /usr/local/bin/kubens
+      args:
+        creates: /usr/local/bin/kubens
+      become: true
