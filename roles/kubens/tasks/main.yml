@@ -1,20 +1,27 @@
 ---
 - block:
-    - name: Configure url for kubens download (aarch64)
+
+    - name: derive artifact_identifier (aarch64)
       set_fact:
-        kubens_url: "https://github.com/ahmetb/kubectx/releases/download/{{ kubens_version }}/kubens_{{ kubens_version }}_linux_arm64.tar.gz"
+        artifact_identifier: "linux_arm64"
       when: ansible_architecture == "aarch64"
 
-    - name: Configure url for kubens download (x86_64)
-      set_fact:
-        kubens_url: "https://github.com/ahmetb/kubectx/releases/download/{{ kubens_version }}/kubens_{{ kubens_version }}_linux_x86_64.tar.gz"
-      when: ansible_architecture == "x86_64"
-
-    - name: Install kubens
+    - name: Fetch the latest release information from GitHub API
       shell: |
-        curl -o /tmp/kubens.tar.gz -s -L {{ kubens_url }}
+        latest_release=$(curl -s https://api.github.com/repos/ahmetb/kubectx/releases/latest)
+
+        # Extract the tag name (version) and download URL for the appropriate binary
+        latest_version=$(echo "$latest_release" | grep -oP '"tag_name": "\K(.*)(?=")')
+        download_url=$(echo "$latest_release" | grep -oP '"browser_download_url": "\K(.*)(?=")' | grep {{ artifact_identifier }}.tar.gz)
+
+        echo "$latest_version"
+      register: latest_version
+
+    - name: Install latest kubens version ({{ latest_version.stdout }})
+      shell: |
         cd /tmp
-        tar xvfz /tmp/kubens.tar.gz
+        curl -o kubens.tar.gz -s -L https://github.com/ahmetb/kubectx/releases/download/{{ latest_version.stdout }}/kubens_{{ latest_version.stdout }}_{{ artifact_identifier }}.tar.gz
+        tar xvfz kubens.tar.gz
         mv kubens /usr/local/bin/kubens
       args:
         creates: /usr/local/bin/kubens
