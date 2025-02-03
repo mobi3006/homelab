@@ -5,3 +5,12 @@
         name: git
         state: present
       become: true
+
+    - name: extend .zshrc
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: '{{ item }}'
+        state: present
+      with_items: 
+        - 'alias gs="git status"'
