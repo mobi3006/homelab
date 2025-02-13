@@ -25,6 +25,7 @@
 
     - name: create ~/.kube/config for microk8s
       shell: |
+        mkdir -p /home/{{ current_user }}/.kube
         /snap/bin/microk8s kubectl config view --raw > ~/.kube/config
 
     - name: Enable microk8s addons

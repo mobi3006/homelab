@@ -9,6 +9,7 @@
 
     - name: create ~/.kube/config for k3s
       shell: |
+        mkdir -p /home/{{ current_user }}/.kube
         cp /etc/rancher/k3s/k3s.yaml /home/{{ current_user }}/.kube/config
         chown {{ current_user }}:{{ current_user }} /home/{{ current_user }}/.kube/config
       args:
