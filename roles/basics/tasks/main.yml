@@ -26,6 +26,7 @@
       with_items:
         - 'dstat'
         - 'procps'  # for vmstat
+        - 'stress'
 
     #############################################
     # snap
