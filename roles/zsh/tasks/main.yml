@@ -26,10 +26,10 @@
         state: present
       with_items: 
         - 'alias cdhomelabansible="cd ~/src/homelab-ansible"'
+        - 'alias cdhomelab="cd ~/src/homelab"'
+        - 'alias cdtemp="cd /tmp"'
         - 'alias la="ls -la"'
         - 'alias ll="ls -l"'
         - 'alias lt="ls -ltr"'
         - 'export EDITOR=vi'
         - 'autoload -Uz compinit && compinit'
-        
-
