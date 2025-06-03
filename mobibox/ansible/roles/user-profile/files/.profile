@@ -146,10 +146,10 @@ if [ "$(is_provisioning_needed)" = "true" ]; then
          ~/homelab_host/mobibox/ansible/playbook-during-login.yml
 fi
 
-if [ "$(is_provisioning_needed)" = "true" ] && [ -f ~/homelab_host/mobibox/shell-extensions/extension.sh ]; then
-   echo "############################### provisioning (mobibox/shell-extensions/extension.sh) - phase 3"
+if [ "$(is_provisioning_needed)" = "true" ] && [ -f ~/homelab_host/mobibox/shell-provisioning/extension.sh ]; then
+   echo "############################### provisioning (mobibox/shell-provisioning/extension.sh) - phase 3"
 
-   ~/homelab_host/mobibox/shell-extensions/extension.sh
+   ~/homelab_host/mobibox/shell-provisioning/extension.sh
 fi
 
 echo "################################### provisioning (dotfiles) - phase 4"

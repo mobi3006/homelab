@@ -10,25 +10,22 @@ This way you have access to your host filesystem where you usually work with you
 
 # Disclaimer
 
-**BE AWARE:** this is an opinionated setup for **ME** ... it is not designed to be customized via hooks or being adoptable to your filesystem structure. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. If you want to adopt the mobibox to your needs fork it.
+**BE AWARE:**
 
-This is the filesystem structure I expect:
+* this is an opinionated setup for **ME** ... it is not designed to be customized via hooks or being adoptable to your filesystem structure. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. If you want to adopt the mobibox to your needs fork it. This is the filesystem structure I expect:
 
-```
-/Users/my-user/
-  src/
-    homelab/
-```
+  ```
+  /Users/my-user/
+    .ssh/
+    src/
+      homelab/
+  ```
 
-With symbolic links you should be able to tweak your filesystem like that to make it compatible to my expectation.
+  With symbolic links you should be able to tweak your filesystem like that to make it compatible to my expectation.
 
----
+* I use Virtualbox with `bento/ubuntu-24.04` in version `202502.21.0` for my daily work and sometimes Parallels on my Apple Silicon. The code should work on other hypervisors as well ... with some small adoptions in the `Vagrantfile`
 
-# Limitations
-
-## Virtualbox 7.1 on Apple Silicon
-
-... with `bento/ubuntu-24.04` in version `202502.21.0`:
+## Limitations - Virtualbox 7.1 on Apple Silicon with `bento/ubuntu-24.04` in version `202502.21.0`
 
 * `vagrant halt && vagrant up` not working (see FAQ)
   * either use `vagrant suspend`
@@ -38,8 +35,6 @@ With symbolic links you should be able to tweak your filesystem like that to mak
 **BE AWARE:** Virtualbox on Apple Silicon is quite new ... basic functionality is working fine
 
 This setup is working but far from being optimal. The Parallels hypervisor on Apple Silicon is much more reliable.
-
-## Parallels on Apple Silicon
 
 ---
 
@@ -65,29 +60,35 @@ This setup is working but far from being optimal. The Parallels hypervisor on Ap
 
 Vagrant is a great way for automating the creation of a Virtual VM running in Hypervisors like Virtualbox, Parallels, ...
 
-## Ansible
+For mobibox there are 3 provisioning tools used
 
-For the initial setup of mobibox I use Ansible. There are 2 phases:
+* ansible (`for the core provisioning done via `Vagrantfile` and integrated into shell initialization via `.profile`
+* shell provisioning
+* dotfiles provisioning
+* devbox global provisioning with 
+
+The reason for those different approaches is historical. Besides Ansible I started with shell provisioning. After some time I switched to dotfiles because of some benefits and in 2025 I found devbox to be a much better tool for development tooling setup. I keep those approaches in parallel to show the differences.
+
+## Ansible Provisioning
+
+For the core setup of mobibox I use Ansible. There are 2 phases:
 
 * **phase 1:** to bring up a base mobibox
   * during initial `vagrant up`
 * **phase 2:** to add packages/configuration that need user interaction (e. g. cloning GitHub repos that require authentication)
   * during initial `vagrant ssh`
-* **phase 3:** personal extensions to core mobibox setup
 
 When both phases have been executed the is a `/home/vagrant/.mobibox_fully_provisioned` file that prevents those phases to be executed again. You can enforce re-execution by
 
 * **phase 1:**
   * `vagrant provision`
     * limited to specific changes (e. g. you cannot change the memory settings or the mounted filesystems)
-* **phase 2 + phase 3:**
+* **phase 2:**
   * delete `/home/vagrant/.mobibox_fully_provisioned` and execute `vagrant ssh` again
 
-This is mainly used to apply changes in Ansible provisioning, e. g. to test Ansible code. In general you should prefer to recreate the machine by `vagrant destroy -f && vagrant up && vagrant ssh`. mobibox is made for recreation at any time.
+This is mainly used to apply changes in Ansible provisioning, e. g. to test Ansible code. In general you should prefer to recreate the machine by `vagrant destroy -f && vagrant up && vagrant ssh`. mobibox is made for recreation at any time ... your working code is usually residing on the host system that remains untouched when `vagrant destroy`.
 
 The core Ansible part (used during initial `vagrant up` and `vagrant ssh` - phase 1 + 2) should be as small as possible because it is user-specific which tools to install and which configuration to use. When I want to integrate my personal custom extensions via Ansible I use phase 3 that is integrated
-
-## Extension Points
 
 ## Challenges
 
