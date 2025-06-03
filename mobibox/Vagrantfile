@@ -39,7 +39,6 @@ VM_NAME = ENV["VM_NAME"] || "mobibox"
 VM_MEMORY = ENV["VM_MEMORY"] || 4096
 VM_CPUS = ENV["VM_CPUS"] || 2
 CPUTYPE = ENV["CPUTYPE"] || "arm64"
-MOBIBOX_CONTRIBS_FOLDER = ENV["MOBIBOX_CONTRIBS_FOLDER"] || "~/mobibox-contribs"
 
 if OS.macos?
   HOST_USER = ENV["USER"]
@@ -78,7 +77,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "..", VM_USER_HOME + "/homelab_host"
   config.vm.synced_folder HOST_USER_HOME, VM_USER_HOME + "/home_host"
   config.vm.synced_folder "~/.ssh", VM_USER_HOME + "/ssh_host"
-  config.vm.synced_folder MOBIBOX_CONTRIBS_FOLDER, VM_USER_HOME + "/mobibox-contribs_home"
 
   config.vagrant.plugins = ['vagrant-vbguest']
   config.vbguest.no_remote = true
@@ -111,8 +109,7 @@ Vagrant.configure("2") do |config|
         host_os: RbConfig::CONFIG['host_vendor'],   # https://www.ruby-forum.com/t/how-to-see-the-all-keys-of-rbconfig-config/229700
         user_home: VM_USER_HOME,
         username: VM_USER,
-        cputype: CPUTYPE,
-        mobibox_contribs_folder: MOBIBOX_CONTRIBS_FOLDER
+        cputype: CPUTYPE
       }
     }
   end
@@ -128,7 +125,7 @@ Vagrant.configure("2") do |config|
 
   config.trigger.after :up do |trigger|
     trigger.name = "Finished Message"
-    trigger.info = "mobibox is ready to use => execute 'vagrant ssh' to connect ... put your mobibox-contributions here: #{MOBIBOX_CONTRIBS_FOLDER}"
+    trigger.info = "mobibox is ready to use => execute 'vagrant ssh' to connect"
   end
 
 end

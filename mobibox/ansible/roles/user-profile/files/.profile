@@ -38,9 +38,6 @@ is_provisioning_needed() {
 #                                            initialization
 ###################################################################################################
 
-# I was thinking about contribution from outside ... but decided to keep it simple inside homelab
-#export MOBIBOX_CONTRIBS_FOLDER=~/mobibox-contribs_home
-
 echo "########################################## basic shell initialization"
 
 ##########################
@@ -94,7 +91,6 @@ bindkey    "\e[6~" history-beginning-search-forward
 #
 alias cdhomelabhost="cd ~/homelab_host"
 alias cdmobibox="cd ~/homelab_host/mobibox"
-alias cdmobiboxcontribs="cd ${MOBIBOX_CONTRIBS_FOLDER}"
 alias cdsshhost="cd ~/ssh_host"
 alias cdtemp="cd /tmp"
 
@@ -150,20 +146,18 @@ if [ "$(is_provisioning_needed)" = "true" ]; then
          ~/homelab_host/mobibox/ansible/playbook-during-login.yml
 fi
 
-if [ "$(is_provisioning_needed)" = "true" ] && [ -f ${MOBIBOX_CONTRIBS_FOLDER}/extension.sh ]; then
-   echo "############################### provisioning (${MOBIBOX_CONTRIBS_FOLDER}/extension.sh) - phase 3"
+if [ "$(is_provisioning_needed)" = "true" ] && [ -f ~/homelab_host/mobibox/shell-extensions/extension.sh ]; then
+   echo "############################### provisioning (mobibox/shell-extensions/extension.sh) - phase 3"
 
-   ${MOBIBOX_CONTRIBS_FOLDER}/extension.sh
+   ~/homelab_host/mobibox/shell-extensions/extension.sh
 fi
 
 echo "################################### provisioning (dotfiles) - phase 4"
 
 #################################################
 # dotfiles
-# ... content resides in ${MOBIBOX_CONTRIBS_FOLDER}/.dotfiles
-#     BUT scripting in ~/homelab_home/mobibox/dotfiles/_scripts_/bootstrap
 #
-export DOTFILES_ROOT="${MOBIBOX_CONTRIBS_FOLDER}/.dotfiles"
+export DOTFILES_ROOT=~/homelab_host/mobibox/dotfiles
 if [ -d ${DOTFILES_ROOT} ]; then
    # there is dotfile content => apply it
    if [ "$(is_provisioning_needed)" = "true" ]; then

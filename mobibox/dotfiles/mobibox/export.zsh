@@ -1,0 +1,1 @@
+alias cdsrchost="cd ~/home_host/src"

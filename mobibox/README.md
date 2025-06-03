@@ -10,7 +10,17 @@ This way you have access to your host filesystem where you usually work with you
 
 # Disclaimer
 
-**BE AWARE:** this is an opinionated setup for **ME** ... it is not designed to be customized via hooks that you fill with your customizations. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. If you want to adopt the mobibox to your needs fork it.
+**BE AWARE:** this is an opinionated setup for **ME** ... it is not designed to be customized via hooks or being adoptable to your filesystem structure. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. If you want to adopt the mobibox to your needs fork it.
+
+This is the filesystem structure I expect:
+
+```
+/Users/my-user/
+  src/
+    homelab/
+```
+
+With symbolic links you should be able to tweak your filesystem like that to make it compatible to my expectation.
 
 ---
 
