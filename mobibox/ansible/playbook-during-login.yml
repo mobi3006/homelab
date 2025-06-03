@@ -1,0 +1,5 @@
+---
+
+- hosts: localhost
+  roles:
+    # here we can configure stuff that is configured after "vagrant ssh"

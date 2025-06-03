@@ -1,0 +1,79 @@
+---
+- block:
+
+    - name: extend root filesystem to maximum
+      shell: |
+        lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+        resize2fs -p /dev/mapper/ubuntu--vg-ubuntu--lv
+
+    # was used for bento/ubuntu-20.04 ... but not compatible with bento/ubuntu-24.04
+    #- name: Adjust /etc/apt/sources.list to support x86-64 binaries (also amd64 Docker Images) in MacOS Rosetta mode
+    #  shell: |
+    #    ~/homelab_host/mobibox/ansible/roles/basics/files/rosetta_x86_sources.sh enable
+    #    apt update
+    
+    # downloading the latest packages with security updates on our distribution
+    # ... all packages installed afterwards will install these latest packages
+    - name: apt update (package repository meta data)
+      shell: "apt update"
+      args:
+        executable: /bin/bash
+
+    # - name: apt upgrade (package upgrade)
+    #   shell: "apt upgrade -y"
+    #   args:
+    #     executable: /bin/bash
+
+    - name: add cron job to keep the system up-to-date
+      cron:
+        name: "keep the system up-to-date"
+        minute: "42"
+        job: "apt update && apt upgrade -y"
+
+    - name: install basic packages
+      apt:
+        name: [
+          'telnet', 
+          'wget', 
+          'zsh', 
+          'unzip', 
+          'zip', 
+          'bash-completion', 
+          'nano',
+          'htop',
+          'rsync',
+          'mc',
+          'ncdu',
+          'net-tools'
+        ]
+        state: latest
+
+    - name: configure vim
+      copy:
+        src: .vimrc
+        dest: "{{globals.user_home}}/.vimrc"
+        mode: 0644
+
+  become: true
+
+- block:
+    # install tfenv in the vagrant USER space (not in SYSTEM space) to allow tfenv
+    # to auto-install proper versions without using "sudo" 
+    - name: Check if tfenv already installed
+      stat:
+        path: ~/programs/tfenv
+      register: state_tfenv
+    - name: Install tfenv and default terraform version 1.6.6
+      shell: |
+        mkdir -p {{globals.user_home}}/programs
+        mkdir -p {{globals.user_home}}/.local/bin
+        _temp_folder=`mktemp -d`
+
+        git clone https://github.com/tfutils/tfenv.git ${_temp_folder}/tfenv
+        
+        mv ${_temp_folder}/tfenv {{globals.user_home}}/programs
+        ln -sf {{globals.user_home}}/programs/tfenv/bin/* {{globals.user_home}}/.local/bin
+
+        TFENV_ARCH=${CPUTYPE}
+        {{globals.user_home}}/.local/bin/tfenv use 1.6.6
+      when: not state_tfenv.stat.exists

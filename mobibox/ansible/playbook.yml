@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  roles:
+    - basics
+    - oh-my-zsh
+    - user-profile
+    - devbox

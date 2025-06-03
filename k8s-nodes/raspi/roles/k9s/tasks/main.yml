@@ -1,0 +1,29 @@
+---
+- block:
+
+    - name: derive artifact_identifier (aarch64)
+      set_fact:
+        artifact_identifier: "linux_arm64"
+      when: ansible_architecture == "aarch64"
+
+    - name: Fetch the latest release information from GitHub API
+      shell: |
+        latest_release=$(curl -s https://api.github.com/repos/derailed/k9s/releases/latest)
+
+        # Extract the tag name (version) and download URL for the appropriate binary
+        latest_version=$(echo "$latest_release" | grep -oP '"tag_name": "\K(.*)(?=")')
+        download_url=$(echo "$latest_release" | grep -oP '"browser_download_url": "\K(.*)(?=")' | grep {{ artifact_identifier }}.tar.gz)
+
+        echo "$latest_version"
+      register: latest_version
+
+
+    - name: Install k9s
+      shell: |
+        wget -O /tmp/k9s.tar.gz https://github.com/derailed/k9s/releases/download/{{ latest_version.stdout }}/k9s_{{ artifact_identifier }}.tar.gz
+        tar -xzf /tmp/k9s.tar.gz
+        mv k9s /usr/local/bin/
+      args:
+        creates: /usr/local/bin/k9s
+
+  become: true

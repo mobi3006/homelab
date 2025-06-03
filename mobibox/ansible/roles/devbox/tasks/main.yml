@@ -1,0 +1,26 @@
+---
+- block:
+
+    - name: install devbox
+      shell: |
+        export FORCE=1
+        curl -fsSL https://get.jetify.com/devbox | bash
+
+    - name: install devbox packages for mobibox global
+      shell: |
+        # this will render a "global" configuration into "~/.local/share/devbox/global/default/devbox.*"
+        # which can be loaded via 'eval "$(devbox global shellenv --init-hook)"'
+        # ... check documentation: https://www.jetify.com/docs/devbox/devbox_global/
+        #
+        devbox global add \
+          docker@latest \
+          gh@latest \
+          jq@latest \
+          k9s@latest \
+          kubectl@latest \
+          kubectx@latest \
+          kubent@latest \
+          kubernetes-helm@latest \
+          kustomize@latest \
+          nodejs_20@latest \
+          python312@latest

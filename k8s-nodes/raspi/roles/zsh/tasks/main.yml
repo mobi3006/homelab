@@ -1,0 +1,35 @@
+---
+- block:
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+      become: true
+
+    - name: Change default shell to zsh
+      user:
+        name: "{{ current_user }}"
+        shell: /usr/bin/zsh
+      become: true
+
+    - name: Install oh-my-zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+      args:
+        creates: /home/{{ current_user }}/.oh-my-zsh
+
+    - name: extend .zshrc
+      lineinfile:
+        path: /home/{{ current_user }}/.zshrc
+        create: yes
+        line: '{{ item }}'
+        state: present
+      with_items: 
+        - 'alias cdhomelabansible="cd ~/src/homelab-ansible"'
+        - 'alias cdhomelab="cd ~/src/homelab"'
+        - 'alias cdtemp="cd /tmp"'
+        - 'alias la="ls -la"'
+        - 'alias ll="ls -l"'
+        - 'alias lt="ls -ltr"'
+        - 'export EDITOR=vi'
+        - 'autoload -Uz compinit && compinit'

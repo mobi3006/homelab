@@ -1,0 +1,134 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+###################################################################################################
+# functions
+#
+module OS
+  def OS.macos?
+      (/darwin/ =~ RbConfig::CONFIG['host_os']) != nil
+  end
+  def OS.monterey?
+    (/darwin.21/ =~ RbConfig::CONFIG['host_os']) != nil
+  end
+  def OS.windows?
+      File::SEPARATOR == '\\'
+  end
+end
+
+###################################################################################################
+# manual configuration
+#
+VAGRANT_VERSION = ">= 2.4.6"
+
+# not working
+#VAGRANT_BOX = "bento/ubuntu-20.04"
+#VAGRANT_BOX_VERSION = "202212.11.0"
+VAGRANT_BOX = "bento/ubuntu-24.04"
+VAGRANT_BOX_VERSION = "202502.21.0"
+
+VM_USER_HOME = '/home/vagrant'
+VM_USER = 'vagrant'
+
+###################################################################################################
+# derived configuration
+#
+
+# OPTIONAL configuration via environment variables
+VM_NAME = ENV["VM_NAME"] || "mobibox"
+VM_MEMORY = ENV["VM_MEMORY"] || 4096
+VM_CPUS = ENV["VM_CPUS"] || 2
+CPUTYPE = ENV["CPUTYPE"] || "arm64"
+MOBIBOX_CONTRIBS_FOLDER = ENV["MOBIBOX_CONTRIBS_FOLDER"] || "~/mobibox-contribs"
+
+if OS.macos?
+  HOST_USER = ENV["USER"]
+  HOST_USER_HOME = '/Users/' + HOST_USER
+else
+  HOST_USER = ENV["USERNAME"]
+  HOST_USER_HOME = 'C:\\Users\\' + HOST_USER
+end
+
+###################################################################################################
+# BOX configuration
+#
+Vagrant.require_version VAGRANT_VERSION
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = VAGRANT_BOX
+  config.vm.box_version = VAGRANT_BOX_VERSION
+  config.vm.box_check_update = true
+
+  config.vm.hostname = VM_NAME
+  config.vm.network "private_network", type: "dhcp"
+
+  # although "home_host" contains all these other folders I mount them separately.
+  # some hypervisors do not respect the file permissions on host system and we have
+  # to mount them in a specific way with explicit permissions
+  config.vm.synced_folder "..", VM_USER_HOME + "/homelab_host"
+  config.vm.synced_folder HOST_USER_HOME, VM_USER_HOME + "/home_host"
+  config.vm.synced_folder "~/.ssh", VM_USER_HOME + "/ssh_host"
+  config.vm.synced_folder MOBIBOX_CONTRIBS_FOLDER, VM_USER_HOME + "/mobibox-contribs_home"
+
+  config.vagrant.plugins = ['vagrant-vbguest']
+  config.vbguest.no_remote = true
+
+  # Update Linux packages after startup? 
+  config.vbguest.auto_update = false
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = VM_NAME
+    vb.memory = VM_MEMORY
+    vb.cpus = VM_CPUS
+
+    # Display the VirtualBox GUI when booting the machine?
+    # ... use "false" ... there were issues with it (shown error on UI)
+    vb.gui = false
+  end
+
+  ##############################################
+  # provisioning via ansible during "vagrant up"
+  #
+  config.vm.provision "shell",
+    inline: "sudo apt install -y ansible"
+#    inline: "sudo apt update && sudo apt -y upgrade && sudo apt install -y ansible"
+
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.provisioning_path = VM_USER_HOME + "/homelab_host/mobibox/ansible"
+    ansible.playbook = "playbook.yml"
+    ansible.extra_vars = {
+      globals: {
+        host_os: RbConfig::CONFIG['host_vendor'],   # https://www.ruby-forum.com/t/how-to-see-the-all-keys-of-rbconfig-config/229700
+        user_home: VM_USER_HOME,
+        username: VM_USER,
+        cputype: CPUTYPE,
+        mobibox_contribs_folder: MOBIBOX_CONTRIBS_FOLDER
+      }
+    }
+  end
+
+  # restoring snapshots requires a reboot ... which is currently not working
+  # ... this "config.trigger.after" is even not working due to race conditions
+  #     => if you need a snapshot ... create it manually by "vagrant snapshot save initial"
+  #config.trigger.after :up do |trigger|
+  #  trigger.name = "Baseline Snapshot creation"
+  #  trigger.info = "initial mobibox snapshot - restore by 'vagrant snapshot restore initial'"
+  #  trigger.run = {inline: "vagrant snapshot save initial"}
+  #end
+
+  config.trigger.after :up do |trigger|
+    trigger.name = "Finished Message"
+    trigger.info = "mobibox is ready to use => execute 'vagrant ssh' to connect ... put your mobibox-contributions here: #{MOBIBOX_CONTRIBS_FOLDER}"
+  end
+
+end

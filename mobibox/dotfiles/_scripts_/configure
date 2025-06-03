@@ -1,0 +1,14 @@
+# all base configuration AFTER "install"
+
+# find the configure.sh and run them iteratively
+#
+# ATTEMPT 1: was not working because if the "configure.sh" is using zsh functions
+#            (e. g. contributed via alias.zsh) it fails if the function requires
+#            user input (e. g. token)
+#
+#find ${DOTFILES_ROOT} -name configure.sh | while read configurer ; do source "${configurer}" ; done
+
+# ATTEMPT 2: manual approach
+#echo "manually execute these commands/functions:"
+#echo "=========================================="
+#find ${DOTFILES_ROOT} -name configure.txt | xargs cat

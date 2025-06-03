@@ -1,0 +1,57 @@
+DOTFILES_SCRIPTS=$(dirname "$0")
+source ${DOTFILES_SCRIPTS}/functions
+
+###################################################################################################
+# setup filesystem structure
+# ... all dotfiles can rely on this setup (to avoid redundancy)
+#
+mkdir -p ~/programs
+
+# in Ubuntu ~/.local/bin is in the PATH
+mkdir -p ~/.local/bin
+
+###################################################################################################
+# support path.zsh
+# ... executed BEFORE all other *.zsh
+#
+for path_extension in `find ${DOTFILES_ROOT}/ -name "path.zsh"`
+do
+  source $path_extension
+  success "extend path with $path_extension"
+done
+
+###################################################################################################
+# source all *.zsh
+# ... not path.zsh (wich are loaded before)
+# ... install.sh is NOT in scope because it is named ".sh" and NOT "*.zsh"
+#
+for file in `find ${DOTFILES_ROOT}/ -name "*.zsh" ! -name "path.zsh" ! -name "completion.zsh"`
+do
+  source $file
+  success "source $file"
+done
+
+###################################################################################################
+# support *.symlink
+# ... we skip_all to be as defensive as possible
+#
+overwrite_all=false
+backup_all=false
+skip_all=true
+
+for symlink in `find ${DOTFILES_ROOT}/ -name "*.symlink" ! -path "*.git*"`
+do
+  dst="$HOME/.$(basename "${symlink%.*}")"
+  link_file "$symlink" "$dst"
+done
+
+###################################################################################################
+# support completion.zsh
+# ... at the end
+#
+for completion in `find ${DOTFILES_ROOT}/ -name "completion.zsh"`
+do
+  source $completion
+done
+
+cd -

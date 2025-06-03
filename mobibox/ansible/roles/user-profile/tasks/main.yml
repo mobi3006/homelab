@@ -1,0 +1,53 @@
+---
+- block:
+
+  - name: copy ssh configuration
+    copy:
+      src: ssh/config
+      dest: "{{globals.user_home}}/.ssh/config"
+      mode: 0600
+
+  - name: Check if public part of id_rsa exists on host system
+    stat:
+      path: ~/ssh_host/id_rsa.pub
+    register: id_rsa_pub_result
+
+  - name: Copy public part of id_rsa to mobibox
+    copy:
+      src: "{{globals.user_home}}/ssh_host/id_rsa.pub"
+      dest: "{{globals.user_home}}/.ssh/id_rsa.pub"
+      mode: 0644
+    when: id_rsa_pub_result.stat.exists
+
+  - name: Appending id_rsa.pub to ~/.ssh/authorized_keys
+    blockinfile:
+      path: "{{globals.user_home}}/.ssh/authorized_keys"
+      block: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      insertafter: EOF
+
+  - name: profile config to user home
+    copy:
+      src: .profile
+      dest: "{{globals.user_home}}/.profile"
+      mode: 0644
+
+  # here do only minimal extensions to .zshrc
+  # ... main stuff should be done in "".profile"
+  - name: Prepend ZSH shell customizations to .zshrc
+    blockinfile:
+      path: "{{globals.user_home}}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED_BLOCK - BEGINNING of file"
+      block: |
+        export HIST_STAMPS="dd.mm.yyyy"
+
+        # enable oh-my-zsh auto-update ... avoid interactivity
+        export DISABLE_UPDATE_PROMPT=true
+      insertbefore: BOF
+
+  - name: Appending ZSH shell customizations to .zshrc
+    blockinfile:
+      path: "{{globals.user_home}}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED_BLOCK - END of file"
+      block: |
+        source ~/.profile
+      insertafter: EOF

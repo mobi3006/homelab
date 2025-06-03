@@ -1,0 +1,72 @@
+---
+- block:
+  - name: Check if .zshrc exists
+    stat:
+      path: ~/.zshrc
+    register: stat_rc_result
+
+  - name: set zsh as default shell
+    become: yes
+    user:
+      name: '{{ globals.username }}'
+      shell: /bin/zsh
+
+  ###############
+  # add oh-my-zsh
+  #
+  - name: Check if .oh-my-zsh exists
+    stat:
+      path: ~/.oh-my-zsh
+    register: stat_oh_my_zsh_result
+
+  - name: Cloning oh-my-zsh
+    git:
+      repo=https://github.com/robbyrussell/oh-my-zsh
+      dest=~/.oh-my-zsh
+    when: not stat_oh_my_zsh_result.stat.exists
+
+  - name: Creating new ~/.zshrc
+    copy:
+      src=~/.oh-my-zsh/templates/zshrc.zsh-template
+      dest=~/.zshrc
+    when: not stat_rc_result.stat.exists
+
+  - name: Configure plugins
+    replace:
+      path: ~/.zshrc
+      regexp: '^plugins=.*$'
+      replace: 'plugins=(git docker docker-compose terraform python pip aws)'
+
+  #########################
+  # add powerlevel10k theme
+  #
+  - name: Check if powerlevel10k ZSH theme exists
+    stat:
+      path: "~/.oh-my-zsh/custom/themes/powerlevel10k"
+    register: stat_powerlevel10k_result
+
+  - name: clone powerlevel10k ZSH theme
+    shell: "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k"
+    args:
+      executable: /bin/bash
+    when: not stat_powerlevel10k_result.stat.exists
+
+  - name: Configure powerlevel10k/powerlevel10k theme
+    replace:
+      path: ~/.zshrc
+      regexp: '^ZSH_THEME="robbyrussell"'
+      replace: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+
+  - name: load custom p10k config (if existing)
+    blockinfile:
+      path: "{{globals.user_home}}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED_BLOCK - END of file"
+      block: |
+        [ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
+      insertafter: EOF
+
+  - name: configure powerlevel10k theme
+    copy:
+      src: .p10k.zsh
+      dest: "~/.p10k.zsh"
+      mode: 0644
