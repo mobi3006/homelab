@@ -19,10 +19,10 @@
       args:
         executable: /bin/bash
 
-    # - name: apt upgrade (package upgrade)
-    #   shell: "apt upgrade -y"
-    #   args:
-    #     executable: /bin/bash
+    - name: apt upgrade (package upgrade)
+      shell: "apt upgrade -y"
+      args:
+        executable: /bin/bash
 
     - name: add cron job to keep the system up-to-date
       cron:

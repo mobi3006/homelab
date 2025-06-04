@@ -19,7 +19,7 @@ end
 ###################################################################################################
 # manual configuration
 #
-VAGRANT_VERSION = ">= 2.4.6"
+VAGRANT_VERSION = ">= 2.4.1"
 
 # not working
 #VAGRANT_BOX = "bento/ubuntu-20.04"
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
   # although "home_host" contains all these other folders I mount them separately.
   # some hypervisors do not respect the file permissions on host system and we have
   # to mount them in a specific way with explicit permissions
-  config.vm.synced_folder "..", VM_USER_HOME + "/homelab_host"
+  config.vm.synced_folder "../..", VM_USER_HOME + "/homelab_host"
   config.vm.synced_folder HOST_USER_HOME, VM_USER_HOME + "/home_host"
   config.vm.synced_folder "~/.ssh", VM_USER_HOME + "/ssh_host"
 
@@ -98,8 +98,7 @@ Vagrant.configure("2") do |config|
   # provisioning via ansible during "vagrant up"
   #
   config.vm.provision "shell",
-    inline: "sudo apt install -y ansible"
-#    inline: "sudo apt update && sudo apt -y upgrade && sudo apt install -y ansible"
+    inline: "sudo apt update && sudo apt -y upgrade && sudo apt install -y ansible"
 
   config.vm.provision "ansible_local" do |ansible|
     ansible.provisioning_path = VM_USER_HOME + "/homelab_host/mobibox/ansible"
