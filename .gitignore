@@ -1,3 +1,191 @@
-.devbox
+# OS-specific files
+.DS_Store
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs and runtime files
+*.log
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Environment and secrets
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.env
+.venv/
+env/
+venv/
 .venv
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Environment and secrets
+.env
+.env.*
+*.env.local
+*.env.*.local
+*.secret
+secrets.yml
+config/secrets.yml
+# Logs and runtime files
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.env
+.venv/
+env/
+venv/
+.venv
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# Environment and secrets
+.env
+.env.*
+*.env.local
+*.env.*.local
+*.secret
+secrets.yml
+config/secrets.yml
+
+# Build output
+dist/
+build/
+out/
+
+# Git
+.gitconfig
+*.orig
+*.rej
+*.patch
+*.diff
+
+# Misc
+*.swp
+*.bak
+*.tmp
+*.temp
+*.old
+*.backup
+*.log.*
+
+# Security
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+*.pfx
+*.asc
+*.gpg
+*.enc
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+*.sdb
+*.mdb
+*.accdb
+
+
+# Devbox
+.devbox
+.devbox/
+.devbox.env
+.devbox.lock
+.devbox.cache/
+.devbox.state/
+
+# Vagrant
 .vagrant
+.vagrant/
+*.box
+*.box.lock
+Vagrantfile.local
+Vagrantfile.custom
+dist/
+build/
+out/
+
+# Git
+*.orig
+*.rej
+*.patch
+*.diff
+
+# Misc
+*.swp
+*.bak
+*.tmp
+*.temp
+*.old
+*.backup
+*.log.*
+
+# Security
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+*.keystore
+*.pfx
+*.asc
+*.gpg
+*.enc
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+*.sdb
+*.mdb
+*.accdb
+
+
+# Devbox
+.devbox
+.devbox/
+.devbox.env
+.devbox.lock
+.devbox.cache/
+.devbox.state/
+
+# Vagrant
+.vagrant
+.vagrant/
+*.box
+*.box.lock
+Vagrantfile.local
+Vagrantfile.custom
