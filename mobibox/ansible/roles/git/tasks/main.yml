@@ -1,0 +1,10 @@
+---
+- block:
+
+    # git CLI will be installed via devbox
+    # ... this is only the configuration - integrate the host system config
+
+    - name: link host system configuration
+      shell: |
+        ln -s ~/home_host/.gitconfig ~/.gitconfig
+        ln -s ~/home_host/.gitignore ~/.gitignore
