@@ -19,7 +19,9 @@
       args:
         executable: /bin/bash
 
+    # TODO-ref-2703127: "apt upgrade" is currently failing (stuck/frozen) on Virtualbox with Apple Silicon
     - name: apt upgrade (package upgrade)
+      when: globals['hypervisor'] != "virtualbox"
       shell: "apt upgrade -y"
       args:
         executable: /bin/bash

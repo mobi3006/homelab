@@ -23,6 +23,5 @@
           kubernetes-helm@latest \
           kustomize@latest \
           nodejs_20@latest \
-          # terraform@latest \   # installation takes ages
-          tfenv@latest \
+          go-task@latest \
           python312@latest

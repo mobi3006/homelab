@@ -31,6 +31,7 @@ This way you have access to your host filesystem where you usually work with you
   * either use `vagrant suspend`
   * or recreate the machine
 * `vagrant snapshot` not working (see FAQ)
+* `apt upgrade` is freezing - see TODO-ref-2703127
 
 **BE AWARE:** Virtualbox on Apple Silicon is quite new ... basic functionality is working fine
 
@@ -190,3 +191,13 @@ Restoring snapshots by `vagrant snapshot restore SNAPSHOT_NAME` reboots the mach
 * `rm -rf .vagrant`
 
 In some cases you might have to reboot the system to destroy mobibox (see question 2).
+
+## Question 5: vagrant halt && vagrant up failing
+
+... on Parallels with
+
+> unknown filesystem type 'prl_fs'
+
+### Workaround 5a:
+
+Do not use `vagrant halt` ... use `vagrant suspend`.
