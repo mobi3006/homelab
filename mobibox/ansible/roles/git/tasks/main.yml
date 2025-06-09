@@ -2,9 +2,41 @@
 - block:
 
     # git CLI will be installed via devbox
-    # ... this is only the configuration - integrate the host system config
+    # ... this is only the configuration - integrate the host system config to allow
+    #     seamless developer experience
 
-    - name: link host system configuration
+    # .gitconfig
+    - name: Check if ~/.gitconfig on host exists
+      stat:
+        path: ~/home_host/.gitconfig
+      register: stat_gitconfig
+
+    - name: link  ~/.gitconfig of host system
+      when: stat_gitconfig.stat.exists
       shell: |
-        ln -s ~/home_host/.gitconfig ~/.gitconfig
-        ln -s ~/home_host/.gitignore ~/.gitignore
+        ln -sf ~/home_host/.gitconfig ~/.gitconfig
+
+    - name: configure git - ~/.gitconfig (not from host)
+      when: not stat_gitconfig.stat.exists
+      template:
+        src: .gitconfig.j2
+        dest: "{{globals.user_home}}/.gitconfig"
+        mode: 0644
+
+    # .gitignore
+    - name: Check if ~/.gitignore on host exists
+      stat:
+        path: ~/home_host/.gitignore
+      register: stat_gitignore
+
+    - name: link  ~/.gitignore of host system
+      when: stat_gitignore.stat.exists
+      shell: |
+        ln -sf ~/home_host/.gitignore ~/.gitignore
+
+    - name: create mobibox specific .gitignore (not from host)
+      when: not stat_gitignore.stat.exists
+      copy:
+        src: .gitignore
+        dest: "{{globals.user_home}}/.gitignore"
+        mode: 0644

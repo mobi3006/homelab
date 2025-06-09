@@ -55,6 +55,16 @@ This setup is working but far from being optimal. The Parallels hypervisor on Ap
   export CPUTYPE=amd64
   ```
 
+## Integration of Host system
+
+mobibox is trying to provide a seamless integration with the host system for best developer experience (less redundancy, less configuration). As a result it will integrate
+
+* some host filesystems (e. g. home folder)
+  * you use the IDE and other tools on your host-system
+* git configuration of the host system (`~/.gitconfig`, `~/.gitignore`)
+
+This way you mobibox is offering a better shell with separated and fully prepared tooling. The intention is similar to Python's virtual environments or devbox. Your hostsystem should not be polluted with tons of packages that you only use once (e. g. experiments). On top of that the development environment should be available within minutes on any machine.
+
 ---
 
 # Vagrant

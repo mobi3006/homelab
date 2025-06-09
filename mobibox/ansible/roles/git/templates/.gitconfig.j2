@@ -1,0 +1,21 @@
+[user]
+    email = unknown@example.com
+    name = unknown
+    # signingkey = globals.gpg_id
+[core]
+    excludesFile = "~/.gitignore"
+[pull]
+    rebase = false
+[push]
+    default = simple
+[alias]
+	hist = log --graph --oneline --decorate --all
+#[commit]
+    # set it to true to ALWAYS sign your commits ... dont forget the "user.signingkey" above
+    #gpgsign = globals.is_gpg_sign
+[credential "https://github.com"]
+    helper =
+    helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+    helper =
+    helper = !/usr/bin/gh auth git-credential
