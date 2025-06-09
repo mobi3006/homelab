@@ -19,6 +19,7 @@
       mode: 0644
     when: id_rsa_pub_result.stat.exists
 
+  # allow ~/.ssh/id_rsa for login to mobibox
   - name: Appending id_rsa.pub to ~/.ssh/authorized_keys
     blockinfile:
       path: "{{globals.user_home}}/.ssh/authorized_keys"
