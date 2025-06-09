@@ -179,5 +179,9 @@ echo "############### devbox"
 #eval "$(devbox global shellenv --init-hook)"
 eval "$(devbox global shellenv --preserve-path-stack -r)" && hash -r
 
+echo "############### pos1"
+
 # this should be the last line
 touch ~/.mobibox_fully_provisioned
+
+echo "############### pos1"
