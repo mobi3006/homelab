@@ -179,9 +179,6 @@ echo "############### devbox"
 #eval "$(devbox global shellenv --init-hook)"
 eval "$(devbox global shellenv --preserve-path-stack -r)" && hash -r
 
-echo "############### pos1"
-
-# this should be the last line
+# these should be the last lines
+echo "############### mark mobibox as fully provisioned"
 touch ~/.mobibox_fully_provisioned
-
-echo "############### pos1"

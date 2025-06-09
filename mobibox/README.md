@@ -6,24 +6,17 @@ The files I work with (and configuration) remains on the host system to be able 
 
 This way you have access to your host filesystem where you usually work with your IDE to write code. You can use mobibox to do the CLI stuff ... smooth integration into your daily work.
 
+![overview.png](./docs/images/overview.png)
+
 ---
 
 # Disclaimer
 
 **BE AWARE:**
 
-* this is an opinionated setup for **ME** ... it is not designed to be customized via hooks or being adoptable to your filesystem structure. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. If you want to adopt the mobibox to your needs fork it. This is the filesystem structure I expect:
-
-  ```
-  /Users/my-user/
-    .ssh/
-    src/
-      homelab/
-  ```
-
-  With symbolic links you should be able to tweak your filesystem like that to make it compatible to my expectation.
-
-* I use Virtualbox with `bento/ubuntu-24.04` in version `202502.21.0` for my daily work and sometimes Parallels on my Apple Silicon. The code should work on other hypervisors as well ... with some small adoptions in the `Vagrantfile`
+* this is an opinionated setup for **ME** ... it is not designed to be customizable via hooks. With some effort this would be possible but it is not needed for **MY** use-case and it would increase complexity. I've decided to not invest into that kind of comfort. Feel free to fork it.
+* I use Virtualbox with `bento/ubuntu-24.04` in version `202502.21.0` for my daily work and sometimes Parallels on my Apple Silicon. The Ansible code should work on other hypervisors as well.
+* the code (or only parts) might be broken - sometimes priorities are changing adhoc and I have no time to fix the issues (or I am even not aware of them - automated tests have no priority)
 
 ## Limitations - Virtualbox 7.1 on Apple Silicon with `bento/ubuntu-24.04` in version `202502.21.0`
 
@@ -36,6 +29,10 @@ This way you have access to your host filesystem where you usually work with you
 **BE AWARE:** Virtualbox on Apple Silicon is quite new ... basic functionality is working fine
 
 This setup is working but far from being optimal. The Parallels hypervisor on Apple Silicon is much more reliable.
+
+## Limitations - Parallels on Apple Silicon with `bento/ubuntu-24.04` in version `202502.21.0`
+
+`vagrant halt && vagrant up` is failing - see Question 5 below
 
 ---
 
@@ -132,6 +129,14 @@ Check [dotfiles section within mobibox](./dotfiles/README.md)
 [devbox](https://www.jetify.com/docs/devbox) is a package manager that is based on `devbox.json` and `devbox.lock` to configure packages on your system. This way your microservice can provide such metadata and with `devbox shell` you get all the packages installed that you need to work with that microservice ... it configures a virtual environment - isolated from tools that are installed on your system and from other microservices using the same tools but with different versions.
 
 It is based on [nix](https://nixos.org/) that offers over [100.000 packages](https://search.nixos.org/packages).
+
+## Benefits compared to OS-package manager
+
+I am usually using Ubuntu LTS versions which might not provide the latest versions for all tools. Sometimes I have to add repositories for some tools. With devbox I usually get the latest versions.
+
+I can also test/configure different versions of a tool ... with the OS-package manager this is almost impossible.
+
+devbox is platform independent. I can use it on Linux, MacOS and Windows without any differences. This has great benefits for automating a development environment setup ... even in case you do not use a virtual machine like mobibox. I could use the devbox package configuration on any host-system out-of-the box.
 
 ## Global devbox packages
 

@@ -32,7 +32,7 @@
         minute: "42"
         job: "apt update && apt upgrade -y"
 
-    - name: install basic packages
+    - name: install basic packages that cannot be installed via devbox
       apt:
         name: [
           'telnet', 
