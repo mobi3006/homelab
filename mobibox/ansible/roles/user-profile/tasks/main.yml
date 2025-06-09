@@ -51,5 +51,4 @@
       marker: "# {mark} ANSIBLE MANAGED_BLOCK - END of file"
       block: |
         source ~/.profile
-        echo "after sourcing .profile ... back in .zshrc"
       insertafter: EOF

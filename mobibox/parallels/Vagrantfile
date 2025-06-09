@@ -29,8 +29,13 @@ end
 VAGRANT_VERSION = ">= 2.4.1"
 
 # not working
-#VAGRANT_BOX = "bento/ubuntu-20.04"
-#VAGRANT_BOX_VERSION = "202212.11.0"
+# VAGRANT_BOX = "bento/ubuntu-20.04"
+# VAGRANT_BOX_VERSION = "202212.11.0"
+
+# we should test due to TODO-ref-2703127
+# VAGRANT_BOX = "bento/ubuntu-20.04-arm64"  
+# VAGRANT_BOX_VERSION = "202301.20.0"
+
 VAGRANT_BOX = "bento/ubuntu-24.04"
 VAGRANT_BOX_VERSION = "202502.21.0"
 
@@ -42,10 +47,10 @@ VM_USER = 'vagrant'
 #
 
 # OPTIONAL configuration via environment variables
-VM_NAME = ENV["VM_NAME"] || "mobibox"
-VM_MEMORY = ENV["VM_MEMORY"] || 4096
-VM_CPUS = ENV["VM_CPUS"] || 2
-CPUTYPE = ENV["CPUTYPE"] || "arm64"
+VM_NAME = ENV["MOBIBOX_VM_NAME"] || "mobibox"
+VM_MEMORY = ENV["MOBIBOX_VM_MEMORY"] || 4096
+VM_CPUS = ENV["MOBIBOX_VM_CPUS"] || 2
+CPUTYPE = ENV["MOBIBOX_CPUTYPE"] || "arm64"
 
 if OS.macos?
   HOST_USER = ENV["USER"]
@@ -108,7 +113,9 @@ Vagrant.configure("2") do |config|
   # provisioning via ansible during "vagrant up"
   #
   config.vm.provision "shell",
-    inline: "sudo apt update && sudo apt -y upgrade && sudo apt install -y ansible"
+    inline: "sudo apt update && sudo apt install -y ansible"
+# TODO-ref-2703127: on Parallels with Apple Silicon the "apt upgrade" was stopping to work ... stuck/frozen ... was working some days before
+#    inline: "sudo apt update && sudo apt -y upgrade && sudo apt install -y ansible"
 
   config.vm.provision "ansible_local" do |ansible|
     ansible.provisioning_path = VM_USER_HOME + "/homelab_host/mobibox/ansible"

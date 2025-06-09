@@ -25,6 +25,8 @@ This way you have access to your host filesystem where you usually work with you
   * or recreate the machine
 * `vagrant snapshot` not working (see FAQ)
 * `apt upgrade` is freezing - see TODO-ref-2703127
+  * same on Parallels ... looks like a problem of the Linux distribution
+    * current workaround: no upgrade
 
 **BE AWARE:** Virtualbox on Apple Silicon is quite new ... basic functionality is working fine
 
@@ -32,7 +34,10 @@ This setup is working but far from being optimal. The Parallels hypervisor on Ap
 
 ## Limitations - Parallels on Apple Silicon with `bento/ubuntu-24.04` in version `202502.21.0`
 
-`vagrant halt && vagrant up` is failing - see Question 5 below
+* `vagrant halt && vagrant up` is failing - see Question 5 below
+* `apt upgrade` is freezing - see TODO-ref-2703127
+  * same on Virtualbox ... looks like a problem of the Linux distribution
+    * current workaround: no upgrade
 
 ---
 
@@ -46,10 +51,10 @@ This setup is working but far from being optimal. The Parallels hypervisor on Ap
 * optional: set those environment variables in your shell that is executing `vagrant up` afterwards
 
   ```
-  export VM_NAME=my-mobibox
-  export VM_MEMORY=2048
-  export VM_CPUS=4
-  export CPUTYPE=amd64
+  export MOBIBOX_VM_NAME=my-mobibox
+  export MOBIBOX_VM_MEMORY=2048
+  export MOBIBOX_VM_CPUS=4
+  export MOBIBOX_CPUTYPE=amd64
   ```
 
 ## Integration of Host system
@@ -216,3 +221,16 @@ In some cases you might have to reboot the system to destroy mobibox (see questi
 ### Workaround 5a:
 
 Do not use `vagrant halt` ... use `vagrant suspend`.
+
+## Question 6: apt upgrade failing with bento/ubuntu-24.04
+
+It suddenly happened that `apt upgrade` is freezing on both Virtualbox and Parallels with the bento/ubuntu-24.04 box. This happens around the openssh-server package.
+
+### Workaround 6a:
+
+I've disabled the upgrade :-(
+
+### Solution 6b:
+
+I've exeuted the `sudo apt upgrade` manually and it resulted in a interactive popup that the `/etc/ssh/sshd_config` file is modified and I have to choose between keeping the old file or using the new one. I chose to keep the old file and the upgrade was successful.
+

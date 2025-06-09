@@ -19,10 +19,13 @@
       args:
         executable: /bin/bash
 
-    # TODO-ref-2703127: "apt upgrade" is currently failing (stuck/frozen) on Virtualbox with Apple Silicon
+    # TODO-ref-2703127: "apt upgrade" is currently failing (stuck/frozen) on Apple Silicon
     - name: apt upgrade (package upgrade)
-      when: globals['hypervisor'] != "virtualbox"
-      shell: "apt upgrade -y"
+      #when: globals['hypervisor'] != "virtualbox"
+      # shell: "apt upgrade -y"
+      # there was an interactive prompt for changing the openssh-server configuration
+      # ... this is not supported in Ansible, so we use the following command to force
+      shell: "sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::='--force-confnew' upgrade -y"
       args:
         executable: /bin/bash
 
